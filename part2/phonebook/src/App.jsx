@@ -1,6 +1,29 @@
 import { useEffect, useState } from 'react'
 import personsService from './services/personsService'
 
+const Notification = ({ text, type }) => {
+
+    if (text === null) {
+        return null
+    }
+
+    const styles = {
+        color: type == 'error' ? 'red' : 'green',
+        background: 'lightgrey',
+        fontSize: 20,
+        borderStyle: 'solid',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10
+      }
+
+    return (
+        <div style={styles}>
+            {text}
+        </div>
+    )
+}
+
 const Filter = ({ value, onChange }) =>
     <div>
         filter shown with <input type="text" value={value} onChange={onChange} />
@@ -26,6 +49,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [search, setSearch] = useState('')
+    const [message, setMessage] = useState({ text: null, typ: null })
 
     useEffect(() => {
         personsService.getAll()
@@ -39,7 +63,7 @@ const App = () => {
         if (existingPerson !== undefined) {
 
             if (!window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`))
-                return // abort update
+                return
 
             // update existing person
             personsService.update(existingPerson.id, { ...existingPerson, number: newNumber })
@@ -48,6 +72,10 @@ const App = () => {
                     setNewName('')
                     setNewNumber('')
                 })
+                .catch(() => {
+                    setMessage({ text: `Information of ${newName} has already been deleted from server`, type: 'error' })
+                    setTimeout(() => {setMessage({ text: null, type: null })}, 5000)
+                })
         }
 
         else {
@@ -55,6 +83,8 @@ const App = () => {
             personsService.create({ name: newName, number: newNumber })
                 .then(createdPerson => {
                     setPersons(persons.concat(createdPerson))
+                    setMessage({ text: `Added ${createdPerson.name}`, type: 'success' })
+                    setTimeout(() => {setMessage({ text: null, type: null })}, 5000)
                     setNewName('')
                     setNewNumber('')
                 })
@@ -77,6 +107,9 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+
+            <Notification text={message.text} type={message.type} />
+
             <Filter value={search} onChange={(event => setSearch(event.target.value))} />
 
             <h3>add a new</h3>
