@@ -7,7 +7,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 
-morgan.token('body', (req, res) => JSON.stringify(req.body))
+morgan.token('body', (req) => JSON.stringify(req.body))
 
 const app = express()
 app.use(express.static('dist'))
@@ -37,8 +37,8 @@ app.post('/api/persons', async (request, response, next) => {
     const body = request.body
 
     let duplicates = await Person.countDocuments({ name: new RegExp(body.name, 'i') }).exec()
-    if (duplicates > 0) 
-        return response.status(400).json({ error: "name must be unique" }).end()
+    if (duplicates > 0)
+        return response.status(400).json({ error: 'name must be unique' }).end()
 
     const person = new Person({
         name: body.name,
@@ -52,7 +52,7 @@ app.post('/api/persons', async (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
-        .then(_ => response.status(204).end())
+        .then(() => response.status(204).end())
         .catch(error => next(error))
 })
 
@@ -71,7 +71,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
-  
+
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint)
 
@@ -92,5 +92,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`)
 })
