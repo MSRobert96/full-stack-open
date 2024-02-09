@@ -72,10 +72,14 @@ const App = () => {
                     setNewName('')
                     setNewNumber('')
                 })
-                .catch(() => {
-                    setMessage({ text: `Information of ${newName} has already been deleted from server`, type: 'error' })
+                .catch(error => {
+                    setMessage({ text: error.response.data.error, type: 'error' })
                     setTimeout(() => {setMessage({ text: null, type: null })}, 5000)
                 })
+                // .catch(() => {
+                //     setMessage({ text: `Information of ${newName} has already been deleted from server`, type: 'error' })
+                //     setTimeout(() => {setMessage({ text: null, type: null })}, 5000)
+                // })
         }
 
         else {
@@ -87,6 +91,10 @@ const App = () => {
                     setTimeout(() => {setMessage({ text: null, type: null })}, 5000)
                     setNewName('')
                     setNewNumber('')
+                })
+                .catch(error => {
+                    setMessage({ text: error.response.data.error, type: 'error' })
+                    setTimeout(() => {setMessage({ text: null, type: null })}, 5000)
                 })
         }
 
