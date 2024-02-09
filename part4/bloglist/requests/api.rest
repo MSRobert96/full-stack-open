@@ -1,0 +1,21 @@
+GET http://localhost:3001/api/blogs
+
+###
+
+GET http://localhost:3001/api/blogs/65be29955210acb7454c4702
+
+###
+
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Test Blog",
+    "author": "Roberto Milan",
+    "url": "https://www.google.com",
+    "likes": 3
+}
+
+###
+
+DELETE http://localhost:3001/api/blogs/65c5fc5e08f544743b753eab
